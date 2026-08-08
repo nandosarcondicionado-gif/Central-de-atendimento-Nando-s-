@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Nando's Ar-Condicionado — Solicitar Atendimento</title>
+    <title>Nando's Ar-Condicionado — Atendimento & O.S.</title>
     <style>
         * {
             margin: 0;
@@ -19,12 +19,12 @@
             color: #333;
             display: flex;
             justify-content: center;
-            align-items: center;
+            align-items: flex-start;
         }
 
         .container {
             width: 100%;
-            max-width: 440px;
+            max-width: 500px;
             background: rgba(255, 255, 255, 0.96);
             backdrop-filter: blur(10px);
             border-radius: 24px;
@@ -33,24 +33,10 @@
             border: 1px solid rgba(255, 255, 255, 0.2);
         }
 
-        header {
-            text-align: center;
-            margin-bottom: 24px;
-        }
-
-        header h1 {
-            color: #0d47a1;
-            font-size: 22px;
-            font-weight: 800;
-            letter-spacing: -0.5px;
-            margin-bottom: 4px;
-        }
-
-        header p {
-            color: #666;
-            font-size: 13px;
-            font-weight: 500;
-        }
+        header { text-align: center; margin-bottom: 20px; }
+        .logo-img { max-width: 120px; max-height: 80px; margin-bottom: 8px; object-fit: contain; }
+        header h1 { color: #0d47a1; font-size: 22px; font-weight: 800; }
+        header p { color: #666; font-size: 13px; }
 
         .caixa {
             background: #ffffff;
@@ -61,346 +47,276 @@
             border: 1px solid #eef2f6;
         }
 
-        .caixa h2 {
-            font-size: 16px;
-            color: #0d47a1;
-            margin-bottom: 14px;
-            display: flex;
-            align-items: center;
-            gap: 8px;
-        }
+        .caixa h2 { font-size: 16px; color: #0d47a1; margin-bottom: 12px; }
 
-        label {
-            display: block;
-            margin: 12px 0 6px 0;
-            font-size: 13px;
-            color: #444;
-            font-weight: 700;
-        }
+        label { display: block; margin: 10px 0 4px 0; font-size: 12px; color: #444; font-weight: 700; }
 
-        input[type="text"],
-        input[type="tel"],
-        input[type="email"],
-        input[type="number"],
-        select,
-        textarea {
-            width: 100%;
-            padding: 12px 14px;
-            border: 1.5px solid #cfd8dc;
-            border-radius: 10px;
-            font-size: 14px;
-            outline: none;
-            transition: all 0.2s ease;
-            background: #fafafa;
-        }
-
-        input:focus, textarea:focus {
-            border-color: #1976d2;
-            background: #fff;
-            box-shadow: 0 0 0 3px rgba(25, 118, 210, 0.15);
+        input[type="text"], input[type="tel"], input[type="email"], input[type="number"], select, textarea {
+            width: 100%; padding: 9px 11px; border: 1.5px solid #cfd8dc;
+            border-radius: 8px; font-size: 13px; outline: none; background: #fafafa;
         }
 
         button {
-            width: 100%;
-            padding: 14px;
-            border: none;
-            border-radius: 12px;
-            font-size: 15px;
-            font-weight: 700;
-            cursor: pointer;
-            transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 8px;
+            width: 100%; padding: 12px; border: none; border-radius: 10px;
+            font-size: 14px; font-weight: 700; cursor: pointer;
+            display: flex; align-items: center; justify-content: center; gap: 8px;
             box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
         }
 
-        button:active {
-            transform: scale(0.98);
-        }
-
         .btn-azul { background: #1565c0; color: #fff; margin: 8px 0; }
-        .btn-azul:hover { background: #0d47a1; }
-
         .btn-verde { background: #2e7d32; color: #fff; margin: 8px 0; }
-        .btn-verde:hover { background: #1b5e20; }
-
         .btn-laranja { background: #f57c00; color: #fff; margin: 8px 0; }
-        .btn-laranja:hover { background: #e65100; }
 
-        .roleta-wrapper {
-            position: relative;
-            width: 260px;
-            height: 260px;
-            margin: 10px auto 20px auto;
-        }
-
+        .roleta-wrapper { position: relative; width: 240px; height: 240px; margin: 10px auto 20px auto; }
         .seta {
-            width: 0;
-            height: 0;
-            border-left: 14px solid transparent;
-            border-right: 14px solid transparent;
-            border-top: 26px solid #d32f2f;
-            position: absolute;
-            top: -12px;
-            left: 50%;
-            transform: translateX(-50%);
-            z-index: 10;
-            filter: drop-shadow(0 2px 4px rgba(0,0,0,0.3));
+            width: 0; height: 0; border-left: 14px solid transparent; border-right: 14px solid transparent;
+            border-top: 26px solid #d32f2f; position: absolute; top: -12px; left: 50%; transform: translateX(-50%); z-index: 10;
         }
+        #roletaCanvas { width: 240px; height: 240px; border-radius: 50%; transition: transform 4s cubic-bezier(0.15, 0.9, 0.2, 1); }
 
-        #roletaCanvas {
-            width: 260px;
-            height: 260px;
-            border-radius: 50%;
-            box-shadow: 0 8px 25px rgba(0,0,0,0.2);
-            transition: transform 4s cubic-bezier(0.15, 0.9, 0.2, 1);
-        }
-
-        .valor-desconto {
-            font-size: 20px;
-            font-weight: 800;
-            color: #2e7d32;
-            margin-top: 12px;
-            padding: 10px;
-            background: #e8f5e9;
-            border-radius: 10px;
-            text-align: center;
-            border: 1px solid #c8e6c9;
-        }
-
+        .valor-desconto { font-size: 16px; font-weight: 800; color: #2e7d32; margin-top: 10px; padding: 8px; background: #e8f5e9; border-radius: 8px; text-align: center; }
+        .aviso-trava { font-size: 13px; color: #c62828; font-weight: bold; background: #ffebee; padding: 10px; border-radius: 8px; margin-bottom: 12px; text-align: center; }
         .escondido { display: none !important; }
 
         .servico-item {
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            gap: 10px;
-            margin: 8px 0;
-            padding: 10px 12px;
-            background: #f8fafc;
-            border: 1px solid #e2e8f0;
-            border-radius: 10px;
+            display: flex; align-items: center; justify-content: space-between; gap: 8px;
+            margin: 6px 0; padding: 8px; background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 8px;
         }
+        .servico-item label { margin: 0; font-size: 12px; flex-grow: 1; }
+        .servico-item input[type="checkbox"] { width: 16px; height: 16px; accent-color: #1565c0; }
+        .servico-item input[type="number"] { width: 55px; text-align: center; }
 
-        .servico-item label {
-            margin: 0;
-            font-size: 13px;
-            flex-grow: 1;
-            cursor: pointer;
-        }
-
-        .servico-item input[type="checkbox"] {
-            width: 18px;
-            height: 18px;
-            accent-color: #1565c0;
-            cursor: pointer;
-        }
-
-        .servico-item input[type="number"] {
-            width: 65px;
-            padding: 6px;
-            text-align: center;
-        }
-
-        .progresso {
-            display: flex;
-            justify-content: space-between;
-            margin-bottom: 20px;
-            position: relative;
-        }
-
-        .progresso::before {
-            content: '';
-            position: absolute;
-            top: 50%;
-            left: 0;
-            right: 0;
-            height: 2px;
-            background: #e0e0e0;
-            z-index: 1;
-            transform: translateY(-50%);
-        }
-
-        .passo-num {
-            width: 32px;
-            height: 32px;
-            border-radius: 50%;
-            background: #e0e0e0;
-            color: #666;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-weight: 700;
-            font-size: 13px;
-            position: relative;
-            z-index: 2;
-            transition: all 0.3s;
-        }
-
-        .passo-num.ativo {
-            background: #1565c0;
-            color: #fff;
-            box-shadow: 0 0 0 4px rgba(21, 101, 192, 0.2);
-        }
-
-        .aviso-fidelidade {
-            background: #fff8e1;
-            border: 1px solid #ffe082;
-            border-radius: 10px;
-            padding: 12px;
-            margin-top: 14px;
-            font-size: 12px;
-            color: #795548;
-            line-height: 1.4;
+        .item-tecnico {
+            display: grid; grid-template-columns: 1fr 60px 85px; align-items: center; gap: 6px;
+            margin: 6px 0; padding: 6px 8px; background: #f0f4f8; border-radius: 6px; font-size: 12px;
         }
 
         .passo { display: none; }
-        .passo.ativo { display: block; animation: fadeIn 0.3s ease-in-out; }
+        .passo.ativo { display: block; }
 
-        @keyframes fadeIn {
-            from { opacity: 0; transform: translateY(8px); }
-            to { opacity: 1; transform: translateY(0); }
+        /* ESTILO DA ORDEM DE SERVIÇO (O.S.) */
+        #folha-os {
+            display: none; background: #ffffff; color: #000; padding: 25px; border-radius: 10px;
+            position: relative; box-shadow: 0 0 15px rgba(0,0,0,0.1); margin-top: 20px; overflow: hidden;
         }
 
-        .sucesso { text-align: center; padding: 20px 10px; }
-        .sucesso .icone { font-size: 56px; margin-bottom: 10px; }
+        #folha-os::before {
+            content: ''; position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%);
+            width: 260px; height: 260px; background-image: url('logo.png'); background-repeat: no-repeat;
+            background-position: center; background-size: contain; opacity: 0.08; pointer-events: none;
+        }
+
+        .os-conteudo { position: relative; z-index: 1; }
+        .os-header { display: flex; justify-content: space-between; align-items: center; border-bottom: 2px solid #0d47a1; padding-bottom: 8px; margin-bottom: 10px; }
+        .os-header img { max-width: 80px; max-height: 50px; }
+        .os-header h2 { font-size: 15px; color: #0d47a1; }
+        .os-header p { font-size: 10px; color: #555; }
+        .os-secao { margin-bottom: 10px; font-size: 11px; }
+        .os-secao-titulo { background: #0d47a1; color: #fff; padding: 3px 6px; font-weight: bold; border-radius: 3px; margin-bottom: 5px; font-size: 11px; }
+        .os-tabela { width: 100%; border-collapse: collapse; margin-top: 4px; font-size: 11px; }
+        .os-tabela th, .os-tabela td { border: 1px solid #ddd; padding: 5px; text-align: left; }
+        .os-tabela th { background: #f0f4f8; color: #0d47a1; }
+        .os-totais { margin-top: 8px; text-align: right; font-size: 12px; line-height: 1.4; }
+        .os-assinaturas { margin-top: 30px; display: flex; justify-content: space-between; gap: 15px; }
+        .linha-assinatura { flex: 1; text-align: center; border-top: 1px solid #333; padding-top: 3px; font-size: 10px; font-weight: bold; }
+
+        @media print {
+            body * { visibility: hidden; }
+            #folha-os, #folha-os * { visibility: visible; }
+            #folha-os { position: absolute; left: 0; top: 0; width: 100%; box-shadow: none; padding: 10px; display: block !important; }
+            .no-print { display: none !important; }
+        }
     </style>
 </head>
 <body>
 
-<div class="container">
+<div class="container no-print">
     <header>
+        <img src="logo.png" alt="Logo" class="logo-img" onerror="this.style.display='none'">
         <h1>❄️ Nando's Ar-Condicionado</h1>
-        <p>Jaú e Região — Atendimento Especializado</p>
+        <p>Jaú e Região — (14) 99168-9815</p>
     </header>
 
-    <div id="passo1" class="passo ativo">
-        <div class="caixa" style="text-align: center;">
-            <h2>🎁 Gire e Ganhe Desconto!</h2>
-            <div class="roleta-wrapper">
-                <div class="seta"></div>
-                <canvas id="roletaCanvas" width="520" height="520"></canvas>
+    <div id="visao-cliente">
+        <div id="passo1" class="passo ativo">
+            <div class="caixa" style="text-align: center;">
+                <h2>🎁 Gire e Ganhe Desconto!</h2>
+                <div id="msg-ja-girou" class="aviso-trava escondido">
+                    ⚠️ Você já girou a roleta anteriormente neste aparelho!
+                </div>
+                <div class="roleta-wrapper">
+                    <div class="seta"></div>
+                    <canvas id="roletaCanvas" width="480" height="480"></canvas>
+                </div>
+                <button class="btn-laranja" onclick="girarRoleta()" id="btn-girar">🎯 Gire a Roleta</button>
+                <div class="valor-desconto escondido" id="resultado-desconto"></div>
+                <button class="btn-verde escondido" id="btn-continuar" onclick="irPasso(2)" style="margin-top:10px;">✅ Continuar</button>
             </div>
-            <p style="font-size:12px;color:#666;margin-bottom:12px;">Descontos exclusivos aplicados no seu pedido final!</p>
-            <button class="btn-laranja" onclick="girarRoleta()" id="btn-girar">🎯 Gire a Roleta</button>
-            <div class="valor-desconto escondido" id="resultado-desconto"></div>
-            <button class="btn-verde escondido" id="btn-continuar" onclick="irPasso(2)" style="margin-top:10px;">✅ Continuar para Cadastro</button>
+        </div>
+
+        <div id="passo2" class="passo">
+            <div class="caixa">
+                <h2>👤 Seus Dados</h2>
+                <label>Nome Completo *</label>
+                <input type="text" id="cli-nome" placeholder="Digite seu nome">
+                
+                <label>WhatsApp / Telefone *</label>
+                <input type="tel" id="cli-tel" placeholder="(14) 90000-0000">
+
+                <label>CPF / CNPJ (Opcional)</label>
+                <input type="text" id="cli-doc" placeholder="000.000.000-00">
+                
+                <label>Endereço Completo *</label>
+                <textarea id="cli-endereco" rows="2" placeholder="Rua, Bairro, Cidade"></textarea>
+
+                <label>Indicado por quem? (Opcional)</label>
+                <input type="text" id="cli-indicou" placeholder="Nome de quem indicou">
+            </div>
+            <button class="btn-azul" onclick="irPasso(1)">⬅ Voltar</button>
+            <button class="btn-verde" onclick="irPasso(3)">Próximo ➡</button>
+        </div>
+
+        <div id="passo3" class="passo">
+            <div class="caixa">
+                <h2>🔧 Escolha os Serviços</h2>
+                <div class="servico-item"><input type="checkbox" id="cli-serv-inst"><label for="cli-serv-inst">Instalação</label><input type="number" id="cli-qtd-inst" min="1" value="1"></div>
+                <div class="servico-item"><input type="checkbox" id="cli-serv-hig"><label for="cli-serv-hig">Higienização Completa</label><input type="number" id="cli-qtd-hig" min="1" value="1"></div>
+                <div class="servico-item"><input type="checkbox" id="cli-serv-pre"><label for="cli-serv-pre">Pré-Higienização</label><input type="number" id="cli-qtd-pre" min="1" value="1"></div>
+                <div class="servico-item"><input type="checkbox" id="cli-serv-gas"><label for="cli-serv-gas">Carga de Gás</label><input type="number" id="cli-qtd-gas" min="1" value="1"></div>
+                <div class="servico-item"><input type="checkbox" id="cli-serv-rem"><label for="cli-serv-rem">Remoção / Desinstalação</label><input type="number" id="cli-qtd-rem" min="1" value="1"></div>
+                <div class="servico-item"><input type="checkbox" id="cli-serv-man"><label for="cli-serv-man">Manutenção / Reparo</label><input type="number" id="cli-qtd-man" min="1" value="1"></div>
+
+                <label>Observações:</label>
+                <textarea id="cli-obs" rows="2" placeholder="Detalhes do local ou modelo do ar..."></textarea>
+            </div>
+            <button class="btn-azul" onclick="irPasso(2)">⬅ Voltar</button>
+            <button class="btn-verde" onclick="enviarPedidoCliente()">📤 Solicitar Orçamento no WhatsApp</button>
+        </div>
+
+        <div id="passo-fim" class="passo">
+            <div class="caixa" style="text-align:center;">
+                <div style="font-size:44px;">🎉</div>
+                <h2>Solicitação Enviada!</h2>
+                <p style="font-size:13px;color:#555;margin-top:6px;">Em breve enviaremos seu orçamento detalhado!</p>
+            </div>
         </div>
     </div>
 
-    <div id="passo2" class="passo">
-        <div class="progresso">
-            <span class="passo-num">1</span>
-            <span class="passo-num ativo">2</span>
-            <span class="passo-num">3</span>
-            <span class="passo-num">4</span>
-        </div>
+    <div id="visao-tecnico" class="escondido">
         <div class="caixa">
-            <h2>👤 Seus Dados</h2>
-            <label>Nome Completo *</label>
-            <input type="text" id="cli-nome" placeholder="Digite seu nome">
-            
-            <label>WhatsApp *</label>
-            <input type="tel" id="cli-tel" placeholder="(00) 00000-0000">
-            
-            <label>E-mail</label>
-            <input type="email" id="cli-email" placeholder="seu@email.com">
-            
-            <label>Endereço (Rua, Bairro, Cidade) *</label>
-            <textarea id="cli-endereco" rows="2" placeholder="Onde será feito o atendimento"></textarea>
-            
-            <label>Indicado por quem? (opcional)</label>
-            <input type="text" id="cli-indicou" placeholder="Nome de quem indicou">
+            <h2 style="color:#d32f2f;">🛠️ Painel do Técnico — Gerar O.S.</h2>
+            <div id="tec-dados-cliente" style="font-size:12px;background:#f0f4f8;padding:8px;border-radius:6px;margin-bottom:10px;"></div>
 
-            <div class="aviso-fidelidade">
-                💎 <strong>Programa Fidelidade:</strong> A cada 5 atendimentos, você garante <strong>15% de desconto automático</strong>!
+            <label style="color:#0d47a1;font-size:13px;margin-top:10px;">1. MÃO DE OBRA / SERVIÇOS (R$):</label>
+            <div id="tec-lista-servicos"></div>
+
+            <label style="color:#0d47a1;font-size:13px;margin-top:14px;">2. MATERIAIS / PEÇAS (Estoque):</label>
+            <p style="font-size:11px;color:#666;margin-bottom:6px;">Selecione a quantidade e o valor unitário:</p>
+            <div id="tec-lista-materiais"></div>
+
+            <div style="margin-top:10px;padding:8px;background:#fff8e1;border-radius:6px;border:1px solid #ffe082;">
+                <label style="margin:0;color:#795548;">➕ Adicionar Material Extra:</label>
+                <div style="display:flex;gap:6px;margin-top:4px;">
+                    <input type="text" id="add-mat-nome" placeholder="Nome da peça/material" style="flex:2;">
+                    <input type="number" id="add-mat-qtd" placeholder="Qtd" style="flex:1;">
+                    <input type="number" id="add-mat-val" placeholder="R$ Val" style="flex:1;">
+                </div>
+                <button type="button" onclick="adicionarMaterialExtra()" class="btn-azul" style="padding:6px;margin-top:6px;font-size:12px;">+ Adicionar Peça</button>
             </div>
+
+            <label style="margin-top:12px;">Observações / Garantia:</label>
+            <textarea id="tec-obs" rows="2">Garantia de 90 dias nos serviços prestados.</textarea>
         </div>
-        <button class="btn-azul" onclick="irPasso(1)">⬅ Voltar</button>
-        <button class="btn-verde" onclick="irPasso(3)">Próximo ➡</button>
+        <button class="btn-verde" onclick="gerarOSFinal()">Gerar Ordem de Serviço Oficial 📄</button>
     </div>
 
-    <div id="passo3" class="passo">
-        <div class="progresso">
-            <span class="passo-num">1</span>
-            <span class="passo-num">2</span>
-            <span class="passo-num ativo">3</span>
-            <span class="passo-num">4</span>
-        </div>
-        <div class="caixa">
-            <h2>🔧 Escolha os Serviços</h2>
-            
-            <div class="servico-item">
-                <input type="checkbox" id="serv-inst" value="Instalação">
-                <label for="serv-inst">Instalação</label>
-                <input type="number" id="qtd-inst" min="1" value="1">
-            </div>
-            <div class="servico-item">
-                <input type="checkbox" id="serv-hig" value="Higienização Completa">
-                <label for="serv-hig">Higienização Completa</label>
-                <input type="number" id="qtd-hig" min="1" value="1">
-            </div>
-            <div class="servico-item">
-                <input type="checkbox" id="serv-pre" value="Pré-Higienização">
-                <label for="serv-pre">Pré-Higienização</label>
-                <input type="number" id="qtd-pre" min="1" value="1">
-            </div>
-            <div class="servico-item">
-                <input type="checkbox" id="serv-gas" value="Carga de Gás Refrigerante">
-                <label for="serv-gas">Carga de Gás</label>
-                <input type="number" id="qtd-gas" min="1" value="1">
-            </div>
-            <div class="servico-item">
-                <input type="checkbox" id="serv-rem" value="Remoção / Desinstalação">
-                <label for="serv-rem">Remoção / Desinstalação</label>
-                <input type="number" id="qtd-rem" min="1" value="1">
-            </div>
-            <div class="servico-item">
-                <input type="checkbox" id="serv-man" value="Manutenção / Reparo">
-                <label for="serv-man">Manutenção / Reparo</label>
-                <input type="number" id="qtd-man" min="1" value="1">
-            </div>
-
-            <label>Observações / Detalhes:</label>
-            <textarea id="obs-local" rows="2" placeholder="Ex: Retirar da sala e colocar no quarto..."></textarea>
-        </div>
-        <button class="btn-azul" onclick="irPasso(2)">⬅ Voltar</button>
-        <button class="btn-verde" onclick="irPasso(4)">Revisar ✅</button>
+    <div id="acoes-os" class="escondido" style="margin-top:12px;">
+        <button class="btn-verde" onclick="window.print()">📄 Imprimir / Baixar PDF da O.S.</button>
+        <button class="btn-laranja" onclick="location.reload()" style="margin-top:8px;">🔄 Nova Consulta</button>
     </div>
+</div>
 
-    <div id="passo4" class="passo">
-        <div class="progresso">
-            <span class="passo-num">1</span>
-            <span class="passo-num">2</span>
-            <span class="passo-num">3</span>
-            <span class="passo-num ativo">4</span>
-        </div>
-        <div class="caixa">
-            <h2>📋 Resumo do Pedido</h2>
-            <div id="resumo-dados" style="font-size:13px;line-height:1.6;color:#444;"></div>
-        </div>
-        <button class="btn-azul" onclick="irPasso(3)">⬅ Voltar</button>
-        <button class="btn-verde" onclick="enviarPedido()">📤 Enviar via WhatsApp</button>
-    </div>
-
-    <div id="passo-fim" class="passo">
-        <div class="caixa sucesso">
-            <div class="icone">🎉</div>
-            <h2>Pedido Enviado!</h2>
-            <p style="font-size:14px;color:#555;margin-top:8px;">Recebemos seu pedido. Em breve entraremos em contato para agendar o horário!</p>
-            <div style="margin-top:15px;padding:10px;background:#e8f5e9;border-radius:10px;color:#2e7d32;font-weight:bold;">
-                Desconto Garantido: <span id="desc-final"></span>%
+<div id="folha-os">
+    <div class="os-conteudo">
+        <div class="os-header">
+            <div style="display:flex;align-items:center;gap:8px;">
+                <img src="logo.png" alt="Logo" onerror="this.style.display='none'">
+                <div>
+                    <h2>NANDO'S AR-CONDICIONADO</h2>
+                    <p>Instalação, Higienização e Manutenção</p>
+                    <p>Jaú/SP — WhatsApp: (14) 99168-9815</p>
+                </div>
             </div>
-            <button class="btn-azul" onclick="location.reload()" style="margin-top:20px;">🔄 Novo Atendimento</button>
+            <div style="text-align:right;">
+                <h3 style="color:#d32f2f;font-size:13px;">O.S. Nº <span id="os-numero">1001</span></h3>
+                <p><strong>Data:</strong> <span id="os-data">00/00/0000</span></p>
+            </div>
+        </div>
+
+        <div class="os-secao">
+            <div class="os-secao-titulo">DADOS DO CLIENTE</div>
+            <p><strong>Cliente:</strong> <span id="os-cli-nome">-</span> | <strong>CPF/CNPJ:</strong> <span id="os-cli-doc">-</span></p>
+            <p><strong>Telefone:</strong> <span id="os-cli-tel">-</span></p>
+            <p><strong>Endereço:</strong> <span id="os-cli-end">-</span></p>
+        </div>
+
+        <div class="os-secao">
+            <div class="os-secao-titulo">SERVIÇOS E MATERIAIS UTILIZADOS</div>
+            <table class="os-tabela">
+                <thead>
+                    <tr>
+                        <th>Item / Descrição</th>
+                        <th style="width: 45px; text-align:center;">Qtd</th>
+                        <th style="width: 75px; text-align:right;">Unitário</th>
+                        <th style="width: 75px; text-align:right;">Subtotal</th>
+                    </tr>
+                </thead>
+                <tbody id="os-tabela-corpo"></tbody>
+            </table>
+        </div>
+
+        <div class="os-totais">
+            <p>Subtotal Serviços/Materiais: <strong>R$ <span id="os-subtotal">0,00</span></strong></p>
+            <p>Desconto Roleta (<span id="os-desc-porcent">0</span>%): <strong style="color:#d32f2f;">- R$ <span id="os-desc-valor">0,00</span></strong></p>
+            <p style="font-size:14px;margin-top:3px;">TOTAL A PAGAR: <strong style="color:#2e7d32;">R$ <span id="os-total-final">0,00</span></strong></p>
+        </div>
+
+        <div class="os-secao" style="margin-top:10px;">
+            <div class="os-secao-titulo">OBSERVAÇÕES E GARANTIA</div>
+            <p id="os-obs-texto" style="font-size:10px;color:#444;">-</p>
+        </div>
+
+        <div class="os-assinaturas">
+            <div class="linha-assinatura">
+                Nando's Ar-Condicionado<br>
+                <span style="font-weight:normal;">Assinatura do Técnico</span>
+            </div>
+            <div class="linha-assinatura">
+                <span id="os-nome-assinatura">Cliente</span><br>
+                <span style="font-weight:normal;">Assinatura do Cliente</span>
+            </div>
         </div>
     </div>
 </div>
 
 <script>
-const SEU_WHATSAPP = "5514991689815"; 
-const DESCONTO_FIDELIDADE = 15;
+const SEU_WHATSAPP = "5514991689815";
+
+const materiaisPadrao = [
+    "Tubo Cobre 1/4\" (metro)",
+    "Tubo Cobre 3/8\" (metro)",
+    "Tubo Cobre 1/2\" (metro)",
+    "Tubo Cobre 5/8\" (metro)",
+    "Isolamento Térmico",
+    "Suporte Condensadora (Par)",
+    "Coxins de Borracha (Jogo)",
+    "Cabo PP Elétrico (metro)",
+    "Mangueira Dreno (metro)",
+    "Fita Vinílica (Rolo)",
+    "Gás Refrigerante R-410A (kg)",
+    "Gás Refrigerante R-32 (kg)",
+    "Gás Refrigerante R-22 (kg)"
+];
 
 const opcoesRoleta = [
     { desconto: 15, cor: '#d32f2f' },
@@ -409,15 +325,14 @@ const opcoesRoleta = [
     { desconto: 3,  cor: '#f57c00' },
     { desconto: 12, cor: '#7b1fa2' },
     { desconto: 7,  cor: '#0097a7' },
-    { desconto: 1,  cor: '#616161' },
     { desconto: 8,  cor: '#e64a19' },
-    { desconto: 13, cor: '#c2185b' },
     { desconto: 2,  cor: '#455a64' }
 ];
 
 let descontoGanho = 0;
 let anguloAtual = 0;
-let dadosCliente = {};
+let dadosGerais = {};
+let materiaisExtras = [];
 
 const canvas = document.getElementById('roletaCanvas');
 const ctx = canvas.getContext('2d');
@@ -428,69 +343,84 @@ function desenharRoleta() {
     const cx = canvas.width / 2;
     const cy = canvas.height / 2;
     const raio = canvas.width / 2 - 10;
-
     ctx.clearRect(0, 0, canvas.width, canvas.height);
 
     for (let i = 0; i < totalFatias; i++) {
-        const anguloInicio = i * anguloFatia;
-        const anguloFim = anguloInicio + anguloFatia;
+        const angInicio = i * anguloFatia;
+        const angFim = angInicio + anguloFatia;
 
         ctx.beginPath();
         ctx.moveTo(cx, cy);
-        ctx.arc(cx, cy, raio, anguloInicio, anguloFim);
+        ctx.arc(cx, cy, raio, angInicio, angFim);
         ctx.closePath();
         ctx.fillStyle = opcoesRoleta[i].cor;
         ctx.fill();
-        ctx.lineWidth = 4;
+        ctx.lineWidth = 3;
         ctx.strokeStyle = '#ffffff';
         ctx.stroke();
 
         ctx.save();
         ctx.translate(cx, cy);
-        ctx.rotate(anguloInicio + anguloFatia / 2);
+        ctx.rotate(angInicio + anguloFatia / 2);
         ctx.textAlign = "right";
         ctx.fillStyle = "#ffffff";
-        ctx.font = "bold 28px Arial";
-        ctx.shadowColor = "rgba(0, 0, 0, 0.5)";
-        ctx.shadowBlur = 4;
-        ctx.fillText(opcoesRoleta[i].desconto + "%", raio - 25, 10);
+        ctx.font = "bold 24px Arial";
+        ctx.fillText(opcoesRoleta[i].desconto + "%", raio - 20, 8);
         ctx.restore();
     }
-
-    ctx.beginPath();
-    ctx.arc(cx, cy, 30, 0, 2 * Math.PI);
-    ctx.fillStyle = '#ffffff';
-    ctx.fill();
-    ctx.lineWidth = 3;
-    ctx.strokeStyle = '#ddd';
-    ctx.stroke();
 }
-
 desenharRoleta();
 
+// VERIFICA SE O CLIENTE JÁ GIROU A ROLETA ANTES
+window.addEventListener('load', () => {
+    const urlParams = new URLSearchParams(window.location.search);
+    if (urlParams.get('tec') === '1') return; // Se for o técnico, ignora a trava
+
+    const descontoSalvo = localStorage.getItem('nandos_desconto_roleta');
+    if (descontoSalvo) {
+        descontoGanho = parseFloat(descontoSalvo);
+        
+        // Bloqueia a roleta e mostra o resultado salvo
+        document.getElementById('btn-girar').style.display = 'none';
+        document.getElementById('msg-ja-girou').classList.remove('escondido');
+        
+        const resultado = document.getElementById('resultado-desconto');
+        resultado.classList.remove('escondido');
+        resultado.innerHTML = `🎁 Seu Desconto Garantido: <strong>${descontoGanho}%!</strong>`;
+        
+        document.getElementById('btn-continuar').classList.remove('escondido');
+    }
+});
+
 function girarRoleta() {
+    // Se já tiver desconto salvo, não deixa girar de novo
+    if (localStorage.getItem('nandos_desconto_roleta')) {
+        alert('⚠️ Você já girou a roleta anteriormente!');
+        return;
+    }
+
     const btnGirar = document.getElementById('btn-girar');
     const resultado = document.getElementById('resultado-desconto');
     const btnContinuar = document.getElementById('btn-continuar');
 
     btnGirar.disabled = true;
-    btnGirar.style.opacity = "0.6";
     btnGirar.textContent = "⏳ Sorteando...";
 
-    const indiceSorteado = Math.floor(Math.random() * totalFatias);
-    descontoGanho = opcoesRoleta[indiceSorteado].desconto;
+    const idx = Math.floor(Math.random() * totalFatias);
+    descontoGanho = opcoesRoleta[idx].desconto;
 
-    const grausPorFatia = 360 / totalFatias;
-    const anguloAlvo = 360 - (indiceSorteado * grausPorFatia) - (grausPorFatia / 2) - 90;
+    // GRAVA O DESCONTO NA MEMÓRIA DO APARELHO DO CLIENTE
+    localStorage.setItem('nandos_desconto_roleta', descontoGanho);
+
+    const grausFatia = 360 / totalFatias;
+    const angAlvo = 360 - (idx * grausFatia) - (grausFatia / 2) - 90;
     
-    const voltas = 1800; 
-    anguloAtual += voltas + (anguloAlvo - (anguloAtual % 360));
-
+    anguloAtual += 1800 + (angAlvo - (anguloAtual % 360));
     canvas.style.transform = `rotate(${anguloAtual}deg)`;
 
     setTimeout(() => {
         resultado.classList.remove('escondido');
-        resultado.innerHTML = `🎉 Você ganhou <strong>${descontoGanho}% DE DESCONTO!</strong>`;
+        resultado.innerHTML = `🎉 Desconto Ganho: <strong>${descontoGanho}%!</strong>`;
         btnContinuar.classList.remove('escondido');
         btnGirar.style.display = 'none';
     }, 4000);
@@ -505,115 +435,235 @@ function irPasso(n) {
             alert('⚠️ Preencha Nome, WhatsApp e Endereço para continuar!');
             return;
         }
-        salvarCadastro(nome, tel);
     }
-
-    if (n === 4) {
-        if(!montarResumo()) return;
-    }
-
     document.querySelectorAll('.passo').forEach(p => p.classList.remove('ativo'));
     document.getElementById(`passo${n}`).classList.add('ativo');
 }
 
-function salvarCadastro(nome, tel) {
-    let chave = `cliente_${nome.replace(/\s/g, '_')}_${tel.replace(/\D/g, '')}`;
-    let cadastro = JSON.parse(localStorage.getItem(chave) || '{"pontos":0,"atendimentos":0}');
-    
-    dadosCliente = {
-        nome, tel,
-        email: document.getElementById('cli-email').value.trim(),
-        endereco: document.getElementById('cli-endereco').value.trim(),
-        indicou: document.getElementById('cli-indicou').value.trim(),
-        chave
-    };
-
-    cadastro.atendimentos++;
-    let msgFidelidade = '';
-    if (cadastro.atendimentos >= 5) {
-        descontoGanho = Math.max(descontoGanho, DESCONTO_FIDELIDADE);
-        msgFidelidade = `\n💎 FIDELIDADE: ${cadastro.atendimentos}º Atendimento → ${DESCONTO_FIDELIDADE}% DE DESCONTO!`;
-    }
-
-    cadastro.ultimoAtendimento = new Date().toLocaleDateString('pt-BR');
-    localStorage.setItem(chave, JSON.stringify(cadastro));
-    dadosCliente.msgFidelidade = msgFidelidade;
-    dadosCliente.atendimentos = cadastro.atendimentos;
-}
-
-function montarResumo() {
-    let servicos = [];
-    let qtdTotal = 0;
-
+function enviarPedidoCliente() {
     const lista = [
         { id: 'inst', nome: 'Instalação' },
         { id: 'hig', nome: 'Higienização Completa' },
         { id: 'pre', nome: 'Pré-Higienização' },
         { id: 'gas', nome: 'Carga de Gás' },
         { id: 'rem', nome: 'Remoção' },
-        { id: 'man', nome: 'Manutenção/Reparo' }
+        { id: 'man', nome: 'Manutenção' }
     ];
 
+    let servicos = [];
+    let servCodificados = [];
+
     lista.forEach(s => {
-        if (document.getElementById(`serv-${s.id}`).checked) {
-            let qtd = document.getElementById(`qtd-${s.id}`).value || '1';
+        if (document.getElementById(`cli-serv-${s.id}`).checked) {
+            let qtd = document.getElementById(`cli-qtd-${s.id}`).value || '1';
             servicos.push(`• ${s.nome} (${qtd}x)`);
-            qtdTotal += parseInt(qtd);
+            servCodificados.push(`${s.id}:${qtd}`);
         }
     });
 
     if (servicos.length === 0) {
-        alert('⚠️ Selecione pelo menos um serviço para continuar!');
-        return false;
+        alert('⚠️ Marque pelo menos um serviço!');
+        return;
     }
 
-    let resumo = document.getElementById('resumo-dados');
-    resumo.innerHTML = `
-        <p><strong>👤 Nome:</strong> ${dadosCliente.nome}</p>
-        <p><strong>📱 WhatsApp:</strong> ${dadosCliente.tel}</p>
-        <p><strong>📍 Endereço:</strong> ${dadosCliente.endereco}</p>
-        ${dadosCliente.indicou ? `<p><strong>🤝 Indicado por:</strong> ${dadosCliente.indicou}</p>` : ''}
-        <hr style="margin:10px 0;border:none;border-top:1px dashed #ccc">
-        <p><strong>🔧 Serviços Selecionados:</strong></p>
-        <p>${servicos.join('<br>')}</p>
-        <p style="margin-top:6px;"><strong>📦 Qtd Total de Aparelhos:</strong> ${qtdTotal}</p>
-        <hr style="margin:10px 0;border:none;border-top:1px dashed #ccc">
-        <p><strong>🎁 Desconto Obtido:</strong> <span style="color:#2e7d32;font-weight:bold;">${descontoGanho}%</span></p>
-        ${dadosCliente.msgFidelidade ? `<p style="color:#2e7d32;font-weight:bold">${dadosCliente.msgFidelidade}</p>` : ''}
-    `;
+    const nome = document.getElementById('cli-nome').value.trim();
+    const tel = document.getElementById('cli-tel').value.trim();
+    const doc = document.getElementById('cli-doc').value.trim();
+    const end = document.getElementById('cli-endereco').value.trim();
+    const indicou = document.getElementById('cli-indicou').value.trim();
+    const obs = document.getElementById('cli-obs').value.trim();
 
-    dadosCliente.servicos = servicos.join('\n');
-    dadosCliente.qtdTotal = qtdTotal;
-    return true;
-}
+    const baseUrl = window.location.href.split('?')[0];
+    const params = new URLSearchParams({
+        tec: '1',
+        nome, tel, doc, end, indicou, obs,
+        desc: descontoGanho,
+        servs: servCodificados.join(',')
+    });
 
-function enviarPedido() {
-    const texto = `
-🔔 *NOVO PEDIDO DE ATENDIMENTO!*
+    const linkTecnico = `${baseUrl}?${params.toString()}`;
 
-👤 *Cliente:* ${dadosCliente.nome}
-📱 *WhatsApp:* ${dadosCliente.tel}
-📧 *E-mail:* ${dadosCliente.email || 'Não informado'}
-📍 *Endereço:* ${dadosCliente.endereco}
-🤝 *Indicado por:* ${dadosCliente.indicou || 'Ninguém'}
+    const mensagemWhatsApp = `
+🔔 *NOVA SOLICITAÇÃO DE ORÇAMENTO!*
 
-🔧 *SERVIÇOS:*
-${dadosCliente.servicos}
+👤 *Cliente:* ${nome}
+📱 *WhatsApp:* ${tel}
+📄 *CPF/CNPJ:* ${doc || 'Não informado'}
+📍 *Endereço:* ${end}
+🤝 *Indicado por:* ${indicou || 'Ninguém'}
 
-📦 *Total de Aparelhos:* ${dadosCliente.qtdTotal}
-🎁 *Desconto da Roleta:* ${descontoGanho}%
-📋 *Atendimento Nº:* ${dadosCliente.atendimentos}
-${dadosCliente.msgFidelidade || ''}
+🔧 *Serviços Solicitados:*
+${servicos.join('\n')}
 
-📝 *Obs:* ${document.getElementById('obs-local').value || 'Nenhuma'}
+🎁 *Desconto Sorteado:* ${descontoGanho}%
+📝 *Obs:* ${obs || 'Nenhuma'}
+
+----------------------------
+🛠️ *LINK DO TÉCNICO (Para Gerar O.S. e Materiais):*
+${linkTecnico}
 `.trim();
 
-    const url = `https://wa.me/${SEU_WHATSAPP}?text=${encodeURIComponent(texto)}`;
-    window.open(url, '_blank');
+    window.open(`https://wa.me/${SEU_WHATSAPP}?text=${encodeURIComponent(mensagemWhatsApp)}`, '_blank');
 
     document.querySelectorAll('.passo').forEach(p => p.classList.remove('ativo'));
     document.getElementById('passo-fim').classList.add('ativo');
-    document.getElementById('desc-final').textContent = descontoGanho;
+}
+
+// PAINEL DO TÉCNICO AO ABRIR O LINK
+window.addEventListener('DOMContentLoaded', () => {
+    const urlParams = new URLSearchParams(window.location.search);
+    if (urlParams.get('tec') === '1') {
+        document.getElementById('visao-cliente').classList.add('escondido');
+        document.getElementById('visao-tecnico').classList.remove('escondido');
+
+        dadosGerais = {
+            nome: urlParams.get('nome') || '',
+            tel: urlParams.get('tel') || '',
+            doc: urlParams.get('doc') || '',
+            end: urlParams.get('end') || '',
+            indicou: urlParams.get('indicou') || '',
+            obs: urlParams.get('obs') || '',
+            desc: parseFloat(urlParams.get('desc')) || 0,
+            servsRaw: urlParams.get('servs') || ''
+        };
+
+        document.getElementById('tec-dados-cliente').innerHTML = `
+            <strong>👤 Cliente:</strong> ${dadosGerais.nome} | <strong>📱 Tel:</strong> ${dadosGerais.tel}<br>
+            <strong>📍 Endereço:</strong> ${dadosGerais.end}<br>
+            <strong>🎁 Desconto Roleta:</strong> <span style="color:#2e7d32;font-weight:bold;">${dadosGerais.desc}%</span>
+        `;
+
+        const nomesMap = {
+            inst: 'Instalação', hig: 'Higienização Completa',
+            pre: 'Pré-Higienização', gas: 'Carga de Gás',
+            rem: 'Remoção', man: 'Manutenção'
+        };
+
+        let htmlServs = '';
+        if (dadosGerais.servsRaw) {
+            const itens = dadosGerais.servsRaw.split(',');
+            itens.forEach((item, index) => {
+                const [id, qtd] = item.split(':');
+                htmlServs += `
+                    <div class="item-tecnico">
+                        <span><strong>${nomesMap[id] || id}</strong></span>
+                        <input type="number" id="tec-serv-qtd-${index}" value="${qtd}" min="1" style="text-align:center;">
+                        <input type="number" id="tec-serv-val-${index}" placeholder="R$ Val" step="10" data-nome="${nomesMap[id] || id}">
+                    </div>
+                `;
+            });
+        }
+        document.getElementById('tec-lista-servicos').innerHTML = htmlServs;
+
+        renderizarListaMateriais();
+    }
+});
+
+function renderizarListaMateriais() {
+    let htmlMat = '';
+    materiaisPadrao.forEach((mat, idx) => {
+        htmlMat += `
+            <div class="item-tecnico" style="background:#f9f9f9;">
+                <span style="font-size:11px;">${mat}</span>
+                <input type="number" id="mat-qtd-${idx}" placeholder="Qtd" min="0" style="text-align:center;">
+                <input type="number" id="mat-val-${idx}" placeholder="R$ Val" step="5" data-matnome="${mat}">
+            </div>
+        `;
+    });
+    document.getElementById('tec-lista-materiais').innerHTML = htmlMat;
+}
+
+function adicionarMaterialExtra() {
+    let nome = document.getElementById('add-mat-nome').value.trim();
+    let qtd = parseFloat(document.getElementById('add-mat-qtd').value) || 1;
+    let val = parseFloat(document.getElementById('add-mat-val').value) || 0;
+
+    if (!nome) {
+        alert('⚠️ Digite o nome do material!');
+        return;
+    }
+
+    materiaisExtras.push({ nome, qtd, val });
+    
+    document.getElementById('add-mat-nome').value = '';
+    document.getElementById('add-mat-qtd').value = '';
+    document.getElementById('add-mat-val').value = '';
+
+    alert(`✅ "${nome}" adicionado com sucesso!`);
+}
+
+function gerarOSFinal() {
+    let subtotal = 0;
+    let itensTabela = [];
+
+    // 1. Serviços
+    const inputsServ = document.querySelectorAll('#tec-lista-servicos input[type="number"][id^="tec-serv-val-"]');
+    inputsServ.forEach((inp, idx) => {
+        let valUnit = parseFloat(inp.value) || 0;
+        let qtd = parseInt(document.getElementById(`tec-serv-qtd-${idx}`).value) || 1;
+        let nomeServ = inp.getAttribute('data-nome');
+        let totalItem = valUnit * qtd;
+
+        if (valUnit > 0) {
+            subtotal += totalItem;
+            itensTabela.push({ nome: `[Serviço] ${nomeServ}`, qtd, valUnit, totalItem });
+        }
+    });
+
+    // 2. Materiais Padrão
+    materiaisPadrao.forEach((mat, idx) => {
+        let qtd = parseFloat(document.getElementById(`mat-qtd-${idx}`).value) || 0;
+        let valUnit = parseFloat(document.getElementById(`mat-val-${idx}`).value) || 0;
+
+        if (qtd > 0 && valUnit > 0) {
+            let totalItem = qtd * valUnit;
+            subtotal += totalItem;
+            itensTabela.push({ nome: `[Peça/Mat.] ${mat}`, qtd, valUnit, totalItem });
+        }
+    });
+
+    // 3. Materiais Extras Adicionados na hora
+    materiaisExtras.forEach(ext => {
+        let totalItem = ext.qtd * ext.val;
+        subtotal += totalItem;
+        itensTabela.push({ nome: `[Peça/Mat.] ${ext.nome}`, qtd: ext.qtd, valUnit: ext.val, totalItem });
+    });
+
+    let valorDesconto = (subtotal * dadosGerais.desc) / 100;
+    let totalFinal = subtotal - valorDesconto;
+
+    let numOS = Math.floor(1000 + Math.random() * 9000);
+    let dataHoje = new Date().toLocaleDateString('pt-BR');
+
+    document.getElementById('os-numero').textContent = numOS;
+    document.getElementById('os-data').textContent = dataHoje;
+    document.getElementById('os-cli-nome').textContent = dadosGerais.nome;
+    document.getElementById('os-cli-doc').textContent = dadosGerais.doc || 'Não informado';
+    document.getElementById('os-cli-tel').textContent = dadosGerais.tel;
+    document.getElementById('os-cli-end').textContent = dadosGerais.end;
+    document.getElementById('os-nome-assinatura').textContent = dadosGerais.nome;
+
+    let corpoHtml = '';
+    itensTabela.forEach(item => {
+        corpoHtml += `
+            <tr>
+                <td>${item.nome}</td>
+                <td style="text-align:center;">${item.qtd}</td>
+                <td style="text-align:right;">R$ ${item.valUnit.toFixed(2)}</td>
+                <td style="text-align:right;">R$ ${item.totalItem.toFixed(2)}</td>
+            </tr>
+        `;
+    });
+
+    document.getElementById('os-tabela-corpo').innerHTML = corpoHtml;
+    document.getElementById('os-subtotal').textContent = subtotal.toFixed(2);
+    document.getElementById('os-desc-porcent').textContent = dadosGerais.desc;
+    document.getElementById('os-desc-valor').textContent = valorDesconto.toFixed(2);
+    document.getElementById('os-total-final').textContent = totalFinal.toFixed(2);
+    document.getElementById('os-obs-texto').textContent = document.getElementById('tec-obs').value;
+
+    document.getElementById('folha-os').style.display = 'block';
+    document.getElementById('acoes-os').classList.remove('escondido');
 }
 </script>
 </body>
