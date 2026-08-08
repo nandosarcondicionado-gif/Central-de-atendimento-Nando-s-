@@ -1,1 +1,620 @@
-&lt;!DOCTYPE html&gt;<br/>&lt;html lang=&quot;pt-BR&quot;&gt;<br/>&lt;head&gt;<br/>    &lt;meta charset=&quot;UTF-8&quot;&gt;<br/>    &lt;meta name=&quot;viewport&quot; content=&quot;width=device-width, initial-scale=1.0&quot;&gt;<br/>    &lt;title&gt;Nando&#39;s Ar-Condicionado — Solicitar Atendimento&lt;/title&gt;<br/>    &lt;style&gt;<br/>        * {<br/>            margin: 0;<br/>            padding: 0;<br/>            box-sizing: border-box;<br/>            font-family: &#39;Segoe UI&#39;, system-ui, -apple-system, sans-serif;<br/>        }<br/><br/>        body {<br/>            background: linear-gradient(135deg, #0a192f 0%, #0d47a1 50%, #002171 100%);<br/>            min-height: 100vh;<br/>            padding: 20px 12px;<br/>            color: #333;<br/>            display: flex;<br/>            justify-content: center;<br/>            align-items: center;<br/>        }<br/><br/>        .container {<br/>            width: 100%;<br/>            max-width: 440px;<br/>            background: rgba(255, 255, 255, 0.96);<br/>            backdrop-filter: blur(10px);<br/>            border-radius: 24px;<br/>            padding: 24px;<br/>            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.4);<br/>            border: 1px solid rgba(255, 255, 255, 0.2);<br/>        }<br/><br/>        header {<br/>            text-align: center;<br/>            margin-bottom: 24px;<br/>        }<br/><br/>        header h1 {<br/>            color: #0d47a1;<br/>            font-size: 22px;<br/>            font-weight: 800;<br/>            letter-spacing: -0.5px;<br/>            margin-bottom: 4px;<br/>        }<br/><br/>        header p {<br/>            color: #666;<br/>            font-size: 13px;<br/>            font-weight: 500;<br/>        }<br/><br/>        .caixa {<br/>            background: #ffffff;<br/>            border-radius: 16px;<br/>            padding: 18px;<br/>            margin-bottom: 16px;<br/>            box-shadow: 0 4px 12px rgba(0,0,0,0.05);<br/>            border: 1px solid #eef2f6;<br/>        }<br/><br/>        .caixa h2 {<br/>            font-size: 16px;<br/>            color: #0d47a1;<br/>            margin-bottom: 14px;<br/>            display: flex;<br/>            align-items: center;<br/>            gap: 8px;<br/>        }<br/><br/>        label {<br/>            display: block;<br/>            margin: 12px 0 6px 0;<br/>            font-size: 13px;<br/>            color: #444;<br/>            font-weight: 700;<br/>        }<br/><br/>        input[type=&quot;text&quot;],<br/>        input[type=&quot;tel&quot;],<br/>        input[type=&quot;email&quot;],<br/>        input[type=&quot;number&quot;],<br/>        select,<br/>        textarea {<br/>            width: 100%;<br/>            padding: 12px 14px;<br/>            border: 1.5px solid #cfd8dc;<br/>            border-radius: 10px;<br/>            font-size: 14px;<br/>            outline: none;<br/>            transition: all 0.2s ease;<br/>            background: #fafafa;<br/>        }<br/><br/>        input:focus, textarea:focus {<br/>            border-color: #1976d2;<br/>            background: #fff;<br/>            box-shadow: 0 0 0 3px rgba(25, 118, 210, 0.15);<br/>        }<br/><br/>        button {<br/>            width: 100%;<br/>            padding: 14px;<br/>            border: none;<br/>            border-radius: 12px;<br/>            font-size: 15px;<br/>            font-weight: 700;<br/>            cursor: pointer;<br/>            transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);<br/>            display: flex;<br/>            align-items: center;<br/>            justify-content: center;<br/>            gap: 8px;<br/>            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);<br/>        }<br/><br/>        button:active {<br/>            transform: scale(0.98);<br/>        }<br/><br/>        .btn-azul { background: #1565c0; color: #fff; margin: 8px 0; }<br/>        .btn-azul:hover { background: #0d47a1; }<br/><br/>        .btn-verde { background: #2e7d32; color: #fff; margin: 8px 0; }<br/>        .btn-verde:hover { background: #1b5e20; }<br/><br/>        .btn-laranja { background: #f57c00; color: #fff; margin: 8px 0; }<br/>        .btn-laranja:hover { background: #e65100; }<br/><br/>        /* ROLETA ESTILIZADA */<br/>        .roleta-wrapper {<br/>            position: relative;<br/>            width: 260px;<br/>            height: 260px;<br/>            margin: 10px auto 20px auto;<br/>        }<br/><br/>        .seta {<br/>            width: 0;<br/>            height: 0;<br/>            border-left: 14px solid transparent;<br/>            border-right: 14px solid transparent;<br/>            border-top: 26px solid #d32f2f;<br/>            position: absolute;<br/>            top: -12px;<br/>            left: 50%;<br/>            transform: translateX(-50%);<br/>            z-index: 10;<br/>            filter: drop-shadow(0 2px 4px rgba(0,0,0,0.3));<br/>        }<br/><br/>        #roletaCanvas {<br/>            width: 260px;<br/>            height: 260px;<br/>            border-radius: 50%;<br/>            box-shadow: 0 8px 25px rgba(0,0,0,0.2);<br/>            transition: transform 4s cubic-bezier(0.15, 0.9, 0.2, 1);<br/>        }<br/><br/>        .valor-desconto {<br/>            font-size: 20px;<br/>            font-weight: 800;<br/>            color: #2e7d32;<br/>            margin-top: 12px;<br/>            padding: 10px;<br/>            background: #e8f5e9;<br/>            border-radius: 10px;<br/>            text-align: center;<br/>            border: 1px solid #c8e6c9;<br/>        }<br/><br/>        .escondido { display: none !important; }<br/><br/>        /* SERVIÇOS SELEÇÃO */<br/>        .servico-item {<br/>            display: flex;<br/>            align-items: center;<br/>            justify-content: space-between;<br/>            gap: 10px;<br/>            margin: 8px 0;<br/>            padding: 10px 12px;<br/>            background: #f8fafc;<br/>            border: 1px solid #e2e8f0;<br/>            border-radius: 10px;<br/>        }<br/><br/>        .servico-item label {<br/>            margin: 0;<br/>            font-size: 13px;<br/>            flex-grow: 1;<br/>            cursor: pointer;<br/>        }<br/><br/>        .servico-item input[type=&quot;checkbox&quot;] {<br/>            width: 18px;<br/>            height: 18px;<br/>            accent-color: #1565c0;<br/>            cursor: pointer;<br/>        }<br/><br/>        .servico-item input[type=&quot;number&quot;] {<br/>            width: 65px;<br/>            padding: 6px;<br/>            text-align: center;<br/>        }<br/><br/>        /* PROGRESSO */<br/>        .progresso {<br/>            display: flex;<br/>            justify-content: space-between;<br/>            margin-bottom: 20px;<br/>            position: relative;<br/>        }<br/><br/>        .progresso::before {<br/>            content: &#39;&#39;;<br/>            position: absolute;<br/>            top: 50%;<br/>            left: 0;<br/>            right: 0;<br/>            height: 2px;<br/>            background: #e0e0e0;<br/>            z-index: 1;<br/>            transform: translateY(-50%);<br/>        }<br/><br/>        .passo-num {<br/>            width: 32px;<br/>            height: 32px;<br/>            border-radius: 50%;<br/>            background: #e0e0e0;<br/>            color: #666;<br/>            display: flex;<br/>            align-items: center;<br/>            justify-content: center;<br/>            font-weight: 700;<br/>            font-size: 13px;<br/>            position: relative;<br/>            z-index: 2;<br/>            transition: all 0.3s;<br/>        }<br/><br/>        .passo-num.ativo {<br/>            background: #1565c0;<br/>            color: #fff;<br/>            box-shadow: 0 0 0 4px rgba(21, 101, 192, 0.2);<br/>        }<br/><br/>        .aviso-fidelidade {<br/>            background: #fff8e1;<br/>            border: 1px solid #ffe082;<br/>            border-radius: 10px;<br/>            padding: 12px;<br/>            margin-top: 14px;<br/>            font-size: 12px;<br/>            color: #795548;<br/>            line-height: 1.4;<br/>        }<br/><br/>        .passo { display: none; }<br/>        .passo.ativo { display: block; animation: fadeIn 0.3s ease-in-out; }<br/><br/>        @keyframes fadeIn {<br/>            from { opacity: 0; transform: translateY(8px); }<br/>            to { opacity: 1; transform: translateY(0); }<br/>        }<br/><br/>        .sucesso { text-align: center; padding: 20px 10px; }<br/>        .sucesso .icone { font-size: 56px; margin-bottom: 10px; }<br/>    &lt;/style&gt;<br/>&lt;/head&gt;<br/>&lt;body&gt;<br/><br/>&lt;div class=&quot;container&quot;&gt;<br/>    &lt;header&gt;<br/>        &lt;h1&gt;❄️ Nando&#39;s Ar-Condicionado&lt;/h1&gt;<br/>        &lt;p&gt;Jaú e Região — Atendimento Especializado&lt;/p&gt;<br/>    &lt;/header&gt;<br/><br/>    &lt;div id=&quot;passo1&quot; class=&quot;passo ativo&quot;&gt;<br/>        &lt;div class=&quot;caixa&quot; style=&quot;text-align: center;&quot;&gt;<br/>            &lt;h2&gt;🎁 Gire e Ganhe Desconto!&lt;/h2&gt;<br/>            &lt;div class=&quot;roleta-wrapper&quot;&gt;<br/>                &lt;div class=&quot;seta&quot;&gt;&lt;/div&gt;<br/>                &lt;canvas id=&quot;roletaCanvas&quot; width=&quot;520&quot; height=&quot;520&quot;&gt;&lt;/canvas&gt;<br/>            &lt;/div&gt;<br/>            &lt;p style=&quot;font-size:12px;color:#666;margin-bottom:12px;&quot;&gt;Descontos exclusivos aplicados no seu pedido final!&lt;/p&gt;<br/>            &lt;button class=&quot;btn-laranja&quot; onclick=&quot;girarRoleta()&quot; id=&quot;btn-girar&quot;&gt;🎯 Gire a Roleta&lt;/button&gt;<br/>            &lt;div class=&quot;valor-desconto escondido&quot; id=&quot;resultado-desconto&quot;&gt;&lt;/div&gt;<br/>            &lt;button class=&quot;btn-verde escondido&quot; id=&quot;btn-continuar&quot; onclick=&quot;irPasso(2)&quot; style=&quot;margin-top:10px;&quot;&gt;✅ Continuar para Cadastro&lt;/button&gt;<br/>        &lt;/div&gt;<br/>    &lt;/div&gt;<br/><br/>    &lt;div id=&quot;passo2&quot; class=&quot;passo&quot;&gt;<br/>        &lt;div class=&quot;progresso&quot;&gt;<br/>            &lt;span class=&quot;passo-num&quot;&gt;1&lt;/span&gt;<br/>            &lt;span class=&quot;passo-num ativo&quot;&gt;2&lt;/span&gt;<br/>            &lt;span class=&quot;passo-num&quot;&gt;3&lt;/span&gt;<br/>            &lt;span class=&quot;passo-num&quot;&gt;4&lt;/span&gt;<br/>        &lt;/div&gt;<br/>        &lt;div class=&quot;caixa&quot;&gt;<br/>            &lt;h2&gt;👤 Seus Dados&lt;/h2&gt;<br/>            &lt;label&gt;Nome Completo *&lt;/label&gt;<br/>            &lt;input type=&quot;text&quot; id=&quot;cli-nome&quot; placeholder=&quot;Digite seu nome&quot;&gt;<br/>            <br/>            &lt;label&gt;WhatsApp *&lt;/label&gt;<br/>            &lt;input type=&quot;tel&quot; id=&quot;cli-tel&quot; placeholder=&quot;(00) 00000-0000&quot;&gt;<br/>            <br/>            &lt;label&gt;E-mail&lt;/label&gt;<br/>            &lt;input type=&quot;email&quot; id=&quot;cli-email&quot; placeholder=&quot;seu@email.com&quot;&gt;<br/>            <br/>            &lt;label&gt;Endereço (Rua, Bairro, Cidade) *&lt;/label&gt;<br/>            &lt;textarea id=&quot;cli-endereco&quot; rows=&quot;2&quot; placeholder=&quot;Onde será feito o atendimento&quot;&gt;&lt;/textarea&gt;<br/>            <br/>            &lt;label&gt;Indicado por quem? (opcional)&lt;/label&gt;<br/>            &lt;input type=&quot;text&quot; id=&quot;cli-indicou&quot; placeholder=&quot;Nome de quem indicou&quot;&gt;<br/><br/>            &lt;div class=&quot;aviso-fidelidade&quot;&gt;<br/>                💎 &lt;strong&gt;Programa Fidelidade:&lt;/strong&gt; A cada 5 atendimentos, você garante &lt;strong&gt;15% de desconto automático&lt;/strong&gt;!<br/>            &lt;/div&gt;<br/>        &lt;/div&gt;<br/>        &lt;button class=&quot;btn-azul&quot; onclick=&quot;irPasso(1)&quot;&gt;⬅ Voltar&lt;/button&gt;<br/>        &lt;button class=&quot;btn-verde&quot; onclick=&quot;irPasso(3)&quot;&gt;Próximo ➡&lt;/button&gt;<br/>    &lt;/div&gt;<br/><br/>    &lt;div id=&quot;passo3&quot; class=&quot;passo&quot;&gt;<br/>        &lt;div class=&quot;progresso&quot;&gt;<br/>            &lt;span class=&quot;passo-num&quot;&gt;1&lt;/span&gt;<br/>            &lt;span class=&quot;passo-num&quot;&gt;2&lt;/span&gt;<br/>            &lt;span class=&quot;passo-num ativo&quot;&gt;3&lt;/span&gt;<br/>            &lt;span class=&quot;passo-num&quot;&gt;4&lt;/span&gt;<br/>        &lt;/div&gt;<br/>        &lt;div class=&quot;caixa&quot;&gt;<br/>            &lt;h2&gt;🔧 Escolha os Serviços&lt;/h2&gt;<br/>            <br/>            &lt;div class=&quot;servico-item&quot;&gt;<br/>                &lt;input type=&quot;checkbox&quot; id=&quot;serv-inst&quot; value=&quot;Instalação&quot;&gt;<br/>                &lt;label for=&quot;serv-inst&quot;&gt;Instalação&lt;/label&gt;<br/>                &lt;input type=&quot;number&quot; id=&quot;qtd-inst&quot; min=&quot;1&quot; value=&quot;1&quot;&gt;<br/>            &lt;/div&gt;<br/>            &lt;div class=&quot;servico-item&quot;&gt;<br/>                &lt;input type=&quot;checkbox&quot; id=&quot;serv-hig&quot; value=&quot;Higienização Completa&quot;&gt;<br/>                &lt;label for=&quot;serv-hig&quot;&gt;Higienização Completa&lt;/label&gt;<br/>                &lt;input type=&quot;number&quot; id=&quot;qtd-hig&quot; min=&quot;1&quot; value=&quot;1&quot;&gt;<br/>            &lt;/div&gt;<br/>            &lt;div class=&quot;servico-item&quot;&gt;<br/>                &lt;input type=&quot;checkbox&quot; id=&quot;serv-pre&quot; value=&quot;Pré-Higienização&quot;&gt;<br/>                &lt;label for=&quot;serv-pre&quot;&gt;Pré-Higienização&lt;/label&gt;<br/>                &lt;input type=&quot;number&quot; id=&quot;qtd-pre&quot; min=&quot;1&quot; value=&quot;1&quot;&gt;<br/>            &lt;/div&gt;<br/>            &lt;div class=&quot;servico-item&quot;&gt;<br/>                &lt;input type=&quot;checkbox&quot; id=&quot;serv-gas&quot; value=&quot;Carga de Gás Refrigerante&quot;&gt;<br/>                &lt;label for=&quot;serv-gas&quot;&gt;Carga de Gás&lt;/label&gt;<br/>                &lt;input type=&quot;number&quot; id=&quot;qtd-gas&quot; min=&quot;1&quot; value=&quot;1&quot;&gt;<br/>            &lt;/div&gt;<br/>            &lt;div class=&quot;servico-item&quot;&gt;<br/>                &lt;input type=&quot;checkbox&quot; id=&quot;serv-rem&quot; value=&quot;Remoção / Desinstalação&quot;&gt;<br/>                &lt;label for=&quot;serv-rem&quot;&gt;Remoção / Desinstalação&lt;/label&gt;<br/>                &lt;input type=&quot;number&quot; id=&quot;qtd-rem&quot; min=&quot;1&quot; value=&quot;1&quot;&gt;<br/>            &lt;/div&gt;<br/>            &lt;div class=&quot;servico-item&quot;&gt;<br/>                &lt;input type=&quot;checkbox&quot; id=&quot;serv-man&quot; value=&quot;Manutenção / Reparo&quot;&gt;<br/>                &lt;label for=&quot;serv-man&quot;&gt;Manutenção / Reparo&lt;/label&gt;<br/>                &lt;input type=&quot;number&quot; id=&quot;qtd-man&quot; min=&quot;1&quot; value=&quot;1&quot;&gt;<br/>            &lt;/div&gt;<br/><br/>            &lt;label&gt;Observações / Detalhes:&lt;/label&gt;<br/>            &lt;textarea id=&quot;obs-local&quot; rows=&quot;2&quot; placeholder=&quot;Ex: Retirar da sala e colocar no quarto...&quot;&gt;&lt;/textarea&gt;<br/>        &lt;/div&gt;<br/>        &lt;button class=&quot;btn-azul&quot; onclick=&quot;irPasso(2)&quot;&gt;⬅ Voltar&lt;/button&gt;<br/>        &lt;button class=&quot;btn-verde&quot; onclick=&quot;irPasso(4)&quot;&gt;Revisar ✅&lt;/button&gt;<br/>    &lt;/div&gt;<br/><br/>    &lt;div id=&quot;passo4&quot; class=&quot;passo&quot;&gt;<br/>        &lt;div class=&quot;progresso&quot;&gt;<br/>            &lt;span class=&quot;passo-num&quot;&gt;1&lt;/span&gt;<br/>            &lt;span class=&quot;passo-num&quot;&gt;2&lt;/span&gt;<br/>            &lt;span class=&quot;passo-num&quot;&gt;3&lt;/span&gt;<br/>            &lt;span class=&quot;passo-num ativo&quot;&gt;4&lt;/span&gt;<br/>        &lt;/div&gt;<br/>        &lt;div class=&quot;caixa&quot;&gt;<br/>            &lt;h2&gt;📋 Resumo do Pedido&lt;/h2&gt;<br/>            &lt;div id=&quot;resumo-dados&quot; style=&quot;font-size:13px;line-height:1.6;color:#444;&quot;&gt;&lt;/div&gt;<br/>        &lt;/div&gt;<br/>        &lt;button class=&quot;btn-azul&quot; onclick=&quot;irPasso(3)&quot;&gt;⬅ Voltar&lt;/button&gt;<br/>        &lt;button class=&quot;btn-verde&quot; onclick=&quot;enviarPedido()&quot;&gt;📤 Enviar via WhatsApp&lt;/button&gt;<br/>    &lt;/div&gt;<br/><br/>    &lt;div id=&quot;passo-fim&quot; class=&quot;passo&quot;&gt;<br/>        &lt;div class=&quot;caixa sucesso&quot;&gt;<br/>            &lt;div class=&quot;icone&quot;&gt;🎉&lt;/div&gt;<br/>            &lt;h2&gt;Pedido Enviado!&lt;/h2&gt;<br/>            &lt;p style=&quot;font-size:14px;color:#555;margin-top:8px;&quot;&gt;Recebemos seu pedido. Em breve entraremos em contato para agendar o horário!&lt;/p&gt;<br/>            &lt;div style=&quot;margin-top:15px;padding:10px;background:#e8f5e9;border-radius:10px;color:#2e7d32;font-weight:bold;&quot;&gt;<br/>                Desconto Garantido: &lt;span id=&quot;desc-final&quot;&gt;&lt;/span&gt;%<br/>            &lt;/div&gt;<br/>            &lt;button class=&quot;btn-azul&quot; onclick=&quot;location.reload()&quot; style=&quot;margin-top:20px;&quot;&gt;🔄 Novo Atendimento&lt;/button&gt;<br/>        &lt;/div&gt;<br/>    &lt;/div&gt;<br/>&lt;/div&gt;<br/><br/>&lt;script&gt;<br/>// CONFIGURAÇÕES<br/>const SEU_WHATSAPP = &quot;5511999999999&quot;; // Alterar para o seu número real<br/>const DESCONTO_FIDELIDADE = 15;<br/><br/>// OPÇÕES DA ROLETA (Porcentagens e Cores)<br/>const opcoesRoleta = [<br/>    { desconto: 15, cor: &#39;#d32f2f&#39; },<br/>    { desconto: 5,  cor: &#39;#1976d2&#39; },<br/>    { desconto: 10, cor: &#39;#388e3c&#39; },<br/>    { desconto: 3,  cor: &#39;#f57c00&#39; },<br/>    { desconto: 12, cor: &#39;#7b1fa2&#39; },<br/>    { desconto: 7,  cor: &#39;#0097a7&#39; },<br/>    { desconto: 1,  cor: &#39;#616161&#39; },<br/>    { desconto: 8,  cor: &#39;#e64a19&#39; },<br/>    { desconto: 13, cor: &#39;#c2185b&#39; },<br/>    { desconto: 2,  cor: &#39;#455a64&#39; }<br/>];<br/><br/>let descontoGanho = 0;<br/>let anguloAtual = 0;<br/>let dadosCliente = {};<br/><br/>// DESENHAR ROLETA VIA CANVAS<br/>const canvas = document.getElementById(&#39;roletaCanvas&#39;);<br/>const ctx = canvas.getContext(&#39;2d&#39;);<br/>const totalFatias = opcoesRoleta.length;<br/>const anguloFatia = (2 * Math.PI) / totalFatias;<br/><br/>function desenharRoleta() {<br/>    const cx = canvas.width / 2;<br/>    const cy = canvas.height / 2;<br/>    const raio = canvas.width / 2 - 10;<br/><br/>    ctx.clearRect(0, 0, canvas.width, canvas.height);<br/><br/>    for (let i = 0; i &lt; totalFatias; i++) {<br/>        const anguloInicio = i * anguloFatia;<br/>        const anguloFim = anguloInicio + anguloFatia;<br/><br/>        // Desenhar Fatia<br/>        ctx.beginPath();<br/>        ctx.moveTo(cx, cy);<br/>        ctx.arc(cx, cy, raio, anguloInicio, anguloFim);<br/>        ctx.closePath();<br/>        ctx.fillStyle = opcoesRoleta[i].cor;<br/>        ctx.fill();<br/>        ctx.lineWidth = 4;<br/>        ctx.strokeStyle = &#39;#ffffff&#39;;<br/>        ctx.stroke();<br/><br/>        // Desenhar Texto (% Desconto)<br/>        ctx.save();<br/>        ctx.translate(cx, cy);<br/>        ctx.rotate(anguloInicio + anguloFatia / 2);<br/>        ctx.textAlign = &quot;right&quot;;<br/>        ctx.fillStyle = &quot;#ffffff&quot;;<br/>        ctx.font = &quot;bold 28px Arial&quot;;<br/>        ctx.shadowColor = &quot;rgba(0, 0, 0, 0.5)&quot;;<br/>        ctx.shadowBlur = 4;<br/>        ctx.fillText(opcoesRoleta[i].desconto + &quot;%&quot;, raio - 25, 10);<br/>        ctx.restore();<br/>    }<br/><br/>    // Círculo Central<br/>    ctx.beginPath();<br/>    ctx.arc(cx, cy, 30, 0, 2 * Math.PI);<br/>    ctx.fillStyle = &#39;#ffffff&#39;;<br/>    ctx.fill();<br/>    ctx.lineWidth = 3;<br/>    ctx.strokeStyle = &#39;#ddd&#39;;<br/>    ctx.stroke();<br/>}<br/><br/>desenharRoleta();<br/><br/>// GIRAR ROLETA<br/>function girarRoleta() {<br/>    const btnGirar = document.getElementById(&#39;btn-girar&#39;);<br/>    const resultado = document.getElementById(&#39;resultado-desconto&#39;);<br/>    const btnContinuar = document.getElementById(&#39;btn-continuar&#39;);<br/><br/>    btnGirar.disabled = true;<br/>    btnGirar.style.opacity = &quot;0.6&quot;;<br/>    btnGirar.textContent = &quot;⏳ Sorteando...&quot;;<br/><br/>    const indiceSorteado = Math.floor(Math.random() * totalFatias);<br/>    descontoGanho = opcoesRoleta[indiceSorteado].desconto;<br/><br/>    // Cálculo exato para parar no ponteiro do topo (270 graus ou -90)<br/>    const grausPorFatia = 360 / totalFatias;<br/>    const anguloAlvo = 360 - (indiceSorteado * grausPorFatia) - (grausPorFatia / 2) - 90;<br/>    <br/>    // Adiciona voltas completas (5 voltas = 1800 deg)<br/>    const voltas = 1800; <br/>    anguloAtual += voltas + (anguloAlvo - (anguloAtual % 360));<br/><br/>    canvas.style.transform = `rotate(${anguloAtual}deg)`;<br/><br/>    setTimeout(() =&gt; {<br/>        resultado.classList.remove(&#39;escondido&#39;);<br/>        resultado.innerHTML = `🎉 Você ganhou &lt;strong&gt;${descontoGanho}% DE DESCONTO!&lt;/strong&gt;`;<br/>        btnContinuar.classList.remove(&#39;escondido&#39;);<br/>        btnGirar.style.display = &#39;none&#39;;<br/>    }, 4000);<br/>}<br/><br/>// PASSOS DO FORMULÁRIO<br/>function irPasso(n) {<br/>    if (n === 3) {<br/>        let nome = document.getElementById(&#39;cli-nome&#39;).value.trim();<br/>        let tel = document.getElementById(&#39;cli-tel&#39;).value.trim();<br/>        let end = document.getElementById(&#39;cli-endereco&#39;).value.trim();<br/>        if (!nome || !tel || !end) {<br/>            alert(&#39;⚠️ Preencha Nome, WhatsApp e Endereço para continuar!&#39;);<br/>            return;<br/>        }<br/>        salvarCadastro(nome, tel);<br/>    }<br/><br/>    if (n === 4) {<br/>        if(!montarResumo()) return;<br/>    }<br/><br/>    document.querySelectorAll(&#39;.passo&#39;).forEach(p =&gt; p.classList.remove(&#39;ativo&#39;));<br/>    document.getElementById(`passo${n}`).classList.add(&#39;ativo&#39;);<br/>}<br/><br/>function salvarCadastro(nome, tel) {<br/>    let chave = `cliente_${nome.replace(/\s/g, &#39;_&#39;)}_${tel.replace(/\D/g, &#39;&#39;)}`;<br/>    let cadastro = JSON.parse(localStorage.getItem(chave) || &#39;{&quot;pontos&quot;:0,&quot;atendimentos&quot;:0}&#39;);<br/>    <br/>    dadosCliente = {<br/>        nome, tel,<br/>        email: document.getElementById(&#39;cli-email&#39;).value.trim(),<br/>        endereco: document.getElementById(&#39;cli-endereco&#39;).value.trim(),<br/>        indicou: document.getElementById(&#39;cli-indicou&#39;).value.trim(),<br/>        chave<br/>    };<br/><br/>    cadastro.atendimentos++;<br/>    let msgFidelidade = &#39;&#39;;<br/>    if (cadastro.atendimentos &gt;= 5) {<br/>        descontoGanho = Math.max(descontoGanho, DESCONTO_FIDELIDADE);<br/>        msgFidelidade = `\n💎 FIDELIDADE: ${cadastro.atendimentos}º Atendimento → ${DESCONTO_FIDELIDADE}% DE DESCONTO!`;<br/>    }<br/><br/>    cadastro.ultimoAtendimento = new Date().toLocaleDateString(&#39;pt-BR&#39;);<br/>    localStorage.setItem(chave, JSON.stringify(cadastro));<br/>    dadosCliente.msgFidelidade = msgFidelidade;<br/>    dadosCliente.atendimentos = cadastro.atendimentos;<br/>}<br/><br/>function montarResumo() {<br/>    let servicos = [];<br/>    let qtdTotal = 0;<br/><br/>    const lista = [<br/>        { id: &#39;inst&#39;, nome: &#39;Instalação&#39; },<br/>        { id: &#39;hig&#39;, nome: &#39;Higienização Completa&#39; },<br/>        { id: &#39;pre&#39;, nome: &#39;Pré-Higienização&#39; },<br/>        { id: &#39;gas&#39;, nome: &#39;Carga de Gás&#39; },<br/>        { id: &#39;rem&#39;, nome: &#39;Remoção&#39; },<br/>        { id: &#39;man&#39;, nome: &#39;Manutenção/Reparo&#39; }<br/>    ];<br/><br/>    lista.forEach(s =&gt; {<br/>        if (document.getElementById(`serv-${s.id}`).checked) {<br/>            let qtd = document.getElementById(`qtd-${s.id}`).value || &#39;1&#39;;<br/>            servicos.push(`• ${s.nome} (${qtd}x)`);<br/>            qtdTotal += parseInt(qtd);<br/>        }<br/>    });<br/><br/>    if (servicos.length === 0) {<br/>        alert(&#39;⚠️ Selecione pelo menos um serviço para continuar!&#39;);<br/>        return false;<br/>    }<br/><br/>    let resumo = document.getElementById(&#39;resumo-dados&#39;);<br/>    resumo.innerHTML = `<br/>        &lt;p&gt;&lt;strong&gt;👤 Nome:&lt;/strong&gt; ${dadosCliente.nome}&lt;/p&gt;<br/>        &lt;p&gt;&lt;strong&gt;📱 WhatsApp:&lt;/strong&gt; ${dadosCliente.tel}&lt;/p&gt;<br/>        &lt;p&gt;&lt;strong&gt;📍 Endereço:&lt;/strong&gt; ${dadosCliente.endereco}&lt;/p&gt;<br/>        ${dadosCliente.indicou ? `&lt;p&gt;&lt;strong&gt;🤝 Indicado por:&lt;/strong&gt; ${dadosCliente.indicou}&lt;/p&gt;` : &#39;&#39;}<br/>        &lt;hr style=&quot;margin:10px 0;border:none;border-top:1px dashed #ccc&quot;&gt;<br/>        &lt;p&gt;&lt;strong&gt;🔧 Serviços Selecionados:&lt;/strong&gt;&lt;/p&gt;<br/>        &lt;p&gt;${servicos.join(&#39;&lt;br&gt;&#39;)}&lt;/p&gt;<br/>        &lt;p style=&quot;margin-top:6px;&quot;&gt;&lt;strong&gt;📦 Qtd Total de Aparelhos:&lt;/strong&gt; ${qtdTotal}&lt;/p&gt;<br/>        &lt;hr style=&quot;margin:10px 0;border:none;border-top:1px dashed #ccc&quot;&gt;<br/>        &lt;p&gt;&lt;strong&gt;🎁 Desconto Obtido:&lt;/strong&gt; &lt;span style=&quot;color:#2e7d32;font-weight:bold;&quot;&gt;${descontoGanho}%&lt;/span&gt;&lt;/p&gt;<br/>        ${dadosCliente.msgFidelidade ? `&lt;p style=&quot;color:#2e7d32;font-weight:bold&quot;&gt;${dadosCliente.msgFidelidade}&lt;/p&gt;` : &#39;&#39;}<br/>    `;<br/><br/>    dadosCliente.servicos = servicos.join(&#39;\n&#39;);<br/>    dadosCliente.qtdTotal = qtdTotal;<br/>    return true;<br/>}<br/><br/>function enviarPedido() {<br/>    const texto = `<br/>🔔 *NOVO PEDIDO DE ATENDIMENTO!*<br/><br/>👤 *Cliente:* ${dadosCliente.nome}<br/>📱 *WhatsApp:* ${dadosCliente.tel}<br/>📧 *E-mail:* ${dadosCliente.email || &#39;Não informado&#39;}<br/>📍 *Endereço:* ${dadosCliente.endereco}<br/>🤝 *Indicado por:* ${dadosCliente.indicou || &#39;Ninguém&#39;}<br/><br/>🔧 *SERVIÇOS:*<br/>${dadosCliente.servicos}<br/><br/>📦 *Total de Aparelhos:* ${dadosCliente.qtdTotal}<br/>🎁 *Desconto da Roleta:* ${descontoGanho}%<br/>📋 *Atendimento Nº:* ${dadosCliente.atendimentos}<br/>${dadosCliente.msgFidelidade || &#39;&#39;}<br/><br/>📝 *Obs:* ${document.getElementById(&#39;obs-local&#39;).value || &#39;Nenhuma&#39;}<br/>`.trim();<br/><br/>    const url = `https://wa.me/${SEU_WHATSAPP}?text=${encodeURIComponent(texto)}`;<br/>    window.open(url, &#39;_blank&#39;);<br/><br/>    document.querySelectorAll(&#39;.passo&#39;).forEach(p =&gt; p.classList.remove(&#39;ativo&#39;));<br/>    document.getElementById(&#39;passo-fim&#39;).classList.add(&#39;ativo&#39;);<br/>    document.getElementById(&#39;desc-final&#39;).textContent = descontoGanho;<br/>}<br/>&lt;/script&gt;<br/>&lt;/body&gt;<br/>&lt;/html&gt;<br/>
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Nando's Ar-Condicionado — Solicitar Atendimento</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+        }
+
+        body {
+            background: linear-gradient(135deg, #0a192f 0%, #0d47a1 50%, #002171 100%);
+            min-height: 100vh;
+            padding: 20px 12px;
+            color: #333;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .container {
+            width: 100%;
+            max-width: 440px;
+            background: rgba(255, 255, 255, 0.96);
+            backdrop-filter: blur(10px);
+            border-radius: 24px;
+            padding: 24px;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.4);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+
+        header {
+            text-align: center;
+            margin-bottom: 24px;
+        }
+
+        header h1 {
+            color: #0d47a1;
+            font-size: 22px;
+            font-weight: 800;
+            letter-spacing: -0.5px;
+            margin-bottom: 4px;
+        }
+
+        header p {
+            color: #666;
+            font-size: 13px;
+            font-weight: 500;
+        }
+
+        .caixa {
+            background: #ffffff;
+            border-radius: 16px;
+            padding: 18px;
+            margin-bottom: 16px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+            border: 1px solid #eef2f6;
+        }
+
+        .caixa h2 {
+            font-size: 16px;
+            color: #0d47a1;
+            margin-bottom: 14px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        label {
+            display: block;
+            margin: 12px 0 6px 0;
+            font-size: 13px;
+            color: #444;
+            font-weight: 700;
+        }
+
+        input[type="text"],
+        input[type="tel"],
+        input[type="email"],
+        input[type="number"],
+        select,
+        textarea {
+            width: 100%;
+            padding: 12px 14px;
+            border: 1.5px solid #cfd8dc;
+            border-radius: 10px;
+            font-size: 14px;
+            outline: none;
+            transition: all 0.2s ease;
+            background: #fafafa;
+        }
+
+        input:focus, textarea:focus {
+            border-color: #1976d2;
+            background: #fff;
+            box-shadow: 0 0 0 3px rgba(25, 118, 210, 0.15);
+        }
+
+        button {
+            width: 100%;
+            padding: 14px;
+            border: none;
+            border-radius: 12px;
+            font-size: 15px;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+        }
+
+        button:active {
+            transform: scale(0.98);
+        }
+
+        .btn-azul { background: #1565c0; color: #fff; margin: 8px 0; }
+        .btn-azul:hover { background: #0d47a1; }
+
+        .btn-verde { background: #2e7d32; color: #fff; margin: 8px 0; }
+        .btn-verde:hover { background: #1b5e20; }
+
+        .btn-laranja { background: #f57c00; color: #fff; margin: 8px 0; }
+        .btn-laranja:hover { background: #e65100; }
+
+        .roleta-wrapper {
+            position: relative;
+            width: 260px;
+            height: 260px;
+            margin: 10px auto 20px auto;
+        }
+
+        .seta {
+            width: 0;
+            height: 0;
+            border-left: 14px solid transparent;
+            border-right: 14px solid transparent;
+            border-top: 26px solid #d32f2f;
+            position: absolute;
+            top: -12px;
+            left: 50%;
+            transform: translateX(-50%);
+            z-index: 10;
+            filter: drop-shadow(0 2px 4px rgba(0,0,0,0.3));
+        }
+
+        #roletaCanvas {
+            width: 260px;
+            height: 260px;
+            border-radius: 50%;
+            box-shadow: 0 8px 25px rgba(0,0,0,0.2);
+            transition: transform 4s cubic-bezier(0.15, 0.9, 0.2, 1);
+        }
+
+        .valor-desconto {
+            font-size: 20px;
+            font-weight: 800;
+            color: #2e7d32;
+            margin-top: 12px;
+            padding: 10px;
+            background: #e8f5e9;
+            border-radius: 10px;
+            text-align: center;
+            border: 1px solid #c8e6c9;
+        }
+
+        .escondido { display: none !important; }
+
+        .servico-item {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 10px;
+            margin: 8px 0;
+            padding: 10px 12px;
+            background: #f8fafc;
+            border: 1px solid #e2e8f0;
+            border-radius: 10px;
+        }
+
+        .servico-item label {
+            margin: 0;
+            font-size: 13px;
+            flex-grow: 1;
+            cursor: pointer;
+        }
+
+        .servico-item input[type="checkbox"] {
+            width: 18px;
+            height: 18px;
+            accent-color: #1565c0;
+            cursor: pointer;
+        }
+
+        .servico-item input[type="number"] {
+            width: 65px;
+            padding: 6px;
+            text-align: center;
+        }
+
+        .progresso {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 20px;
+            position: relative;
+        }
+
+        .progresso::before {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 0;
+            right: 0;
+            height: 2px;
+            background: #e0e0e0;
+            z-index: 1;
+            transform: translateY(-50%);
+        }
+
+        .passo-num {
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            background: #e0e0e0;
+            color: #666;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 700;
+            font-size: 13px;
+            position: relative;
+            z-index: 2;
+            transition: all 0.3s;
+        }
+
+        .passo-num.ativo {
+            background: #1565c0;
+            color: #fff;
+            box-shadow: 0 0 0 4px rgba(21, 101, 192, 0.2);
+        }
+
+        .aviso-fidelidade {
+            background: #fff8e1;
+            border: 1px solid #ffe082;
+            border-radius: 10px;
+            padding: 12px;
+            margin-top: 14px;
+            font-size: 12px;
+            color: #795548;
+            line-height: 1.4;
+        }
+
+        .passo { display: none; }
+        .passo.ativo { display: block; animation: fadeIn 0.3s ease-in-out; }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(8px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .sucesso { text-align: center; padding: 20px 10px; }
+        .sucesso .icone { font-size: 56px; margin-bottom: 10px; }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <header>
+        <h1>❄️ Nando's Ar-Condicionado</h1>
+        <p>Jaú e Região — Atendimento Especializado</p>
+    </header>
+
+    <div id="passo1" class="passo ativo">
+        <div class="caixa" style="text-align: center;">
+            <h2>🎁 Gire e Ganhe Desconto!</h2>
+            <div class="roleta-wrapper">
+                <div class="seta"></div>
+                <canvas id="roletaCanvas" width="520" height="520"></canvas>
+            </div>
+            <p style="font-size:12px;color:#666;margin-bottom:12px;">Descontos exclusivos aplicados no seu pedido final!</p>
+            <button class="btn-laranja" onclick="girarRoleta()" id="btn-girar">🎯 Gire a Roleta</button>
+            <div class="valor-desconto escondido" id="resultado-desconto"></div>
+            <button class="btn-verde escondido" id="btn-continuar" onclick="irPasso(2)" style="margin-top:10px;">✅ Continuar para Cadastro</button>
+        </div>
+    </div>
+
+    <div id="passo2" class="passo">
+        <div class="progresso">
+            <span class="passo-num">1</span>
+            <span class="passo-num ativo">2</span>
+            <span class="passo-num">3</span>
+            <span class="passo-num">4</span>
+        </div>
+        <div class="caixa">
+            <h2>👤 Seus Dados</h2>
+            <label>Nome Completo *</label>
+            <input type="text" id="cli-nome" placeholder="Digite seu nome">
+            
+            <label>WhatsApp *</label>
+            <input type="tel" id="cli-tel" placeholder="(00) 00000-0000">
+            
+            <label>E-mail</label>
+            <input type="email" id="cli-email" placeholder="seu@email.com">
+            
+            <label>Endereço (Rua, Bairro, Cidade) *</label>
+            <textarea id="cli-endereco" rows="2" placeholder="Onde será feito o atendimento"></textarea>
+            
+            <label>Indicado por quem? (opcional)</label>
+            <input type="text" id="cli-indicou" placeholder="Nome de quem indicou">
+
+            <div class="aviso-fidelidade">
+                💎 <strong>Programa Fidelidade:</strong> A cada 5 atendimentos, você garante <strong>15% de desconto automático</strong>!
+            </div>
+        </div>
+        <button class="btn-azul" onclick="irPasso(1)">⬅ Voltar</button>
+        <button class="btn-verde" onclick="irPasso(3)">Próximo ➡</button>
+    </div>
+
+    <div id="passo3" class="passo">
+        <div class="progresso">
+            <span class="passo-num">1</span>
+            <span class="passo-num">2</span>
+            <span class="passo-num ativo">3</span>
+            <span class="passo-num">4</span>
+        </div>
+        <div class="caixa">
+            <h2>🔧 Escolha os Serviços</h2>
+            
+            <div class="servico-item">
+                <input type="checkbox" id="serv-inst" value="Instalação">
+                <label for="serv-inst">Instalação</label>
+                <input type="number" id="qtd-inst" min="1" value="1">
+            </div>
+            <div class="servico-item">
+                <input type="checkbox" id="serv-hig" value="Higienização Completa">
+                <label for="serv-hig">Higienização Completa</label>
+                <input type="number" id="qtd-hig" min="1" value="1">
+            </div>
+            <div class="servico-item">
+                <input type="checkbox" id="serv-pre" value="Pré-Higienização">
+                <label for="serv-pre">Pré-Higienização</label>
+                <input type="number" id="qtd-pre" min="1" value="1">
+            </div>
+            <div class="servico-item">
+                <input type="checkbox" id="serv-gas" value="Carga de Gás Refrigerante">
+                <label for="serv-gas">Carga de Gás</label>
+                <input type="number" id="qtd-gas" min="1" value="1">
+            </div>
+            <div class="servico-item">
+                <input type="checkbox" id="serv-rem" value="Remoção / Desinstalação">
+                <label for="serv-rem">Remoção / Desinstalação</label>
+                <input type="number" id="qtd-rem" min="1" value="1">
+            </div>
+            <div class="servico-item">
+                <input type="checkbox" id="serv-man" value="Manutenção / Reparo">
+                <label for="serv-man">Manutenção / Reparo</label>
+                <input type="number" id="qtd-man" min="1" value="1">
+            </div>
+
+            <label>Observações / Detalhes:</label>
+            <textarea id="obs-local" rows="2" placeholder="Ex: Retirar da sala e colocar no quarto..."></textarea>
+        </div>
+        <button class="btn-azul" onclick="irPasso(2)">⬅ Voltar</button>
+        <button class="btn-verde" onclick="irPasso(4)">Revisar ✅</button>
+    </div>
+
+    <div id="passo4" class="passo">
+        <div class="progresso">
+            <span class="passo-num">1</span>
+            <span class="passo-num">2</span>
+            <span class="passo-num">3</span>
+            <span class="passo-num ativo">4</span>
+        </div>
+        <div class="caixa">
+            <h2>📋 Resumo do Pedido</h2>
+            <div id="resumo-dados" style="font-size:13px;line-height:1.6;color:#444;"></div>
+        </div>
+        <button class="btn-azul" onclick="irPasso(3)">⬅ Voltar</button>
+        <button class="btn-verde" onclick="enviarPedido()">📤 Enviar via WhatsApp</button>
+    </div>
+
+    <div id="passo-fim" class="passo">
+        <div class="caixa sucesso">
+            <div class="icone">🎉</div>
+            <h2>Pedido Enviado!</h2>
+            <p style="font-size:14px;color:#555;margin-top:8px;">Recebemos seu pedido. Em breve entraremos em contato para agendar o horário!</p>
+            <div style="margin-top:15px;padding:10px;background:#e8f5e9;border-radius:10px;color:#2e7d32;font-weight:bold;">
+                Desconto Garantido: <span id="desc-final"></span>%
+            </div>
+            <button class="btn-azul" onclick="location.reload()" style="margin-top:20px;">🔄 Novo Atendimento</button>
+        </div>
+    </div>
+</div>
+
+<script>
+const SEU_WHATSAPP = "5511999999999"; 
+const DESCONTO_FIDELIDADE = 15;
+
+const opcoesRoleta = [
+    { desconto: 15, cor: '#d32f2f' },
+    { desconto: 5,  cor: '#1976d2' },
+    { desconto: 10, cor: '#388e3c' },
+    { desconto: 3,  cor: '#f57c00' },
+    { desconto: 12, cor: '#7b1fa2' },
+    { desconto: 7,  cor: '#0097a7' },
+    { desconto: 1,  cor: '#616161' },
+    { desconto: 8,  cor: '#e64a19' },
+    { desconto: 13, cor: '#c2185b' },
+    { desconto: 2,  cor: '#455a64' }
+];
+
+let descontoGanho = 0;
+let anguloAtual = 0;
+let dadosCliente = {};
+
+const canvas = document.getElementById('roletaCanvas');
+const ctx = canvas.getContext('2d');
+const totalFatias = opcoesRoleta.length;
+const anguloFatia = (2 * Math.PI) / totalFatias;
+
+function desenharRoleta() {
+    const cx = canvas.width / 2;
+    const cy = canvas.height / 2;
+    const raio = canvas.width / 2 - 10;
+
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+    for (let i = 0; i < totalFatias; i++) {
+        const anguloInicio = i * anguloFatia;
+        const anguloFim = anguloInicio + anguloFatia;
+
+        ctx.beginPath();
+        ctx.moveTo(cx, cy);
+        ctx.arc(cx, cy, raio, anguloInicio, anguloFim);
+        ctx.closePath();
+        ctx.fillStyle = opcoesRoleta[i].cor;
+        ctx.fill();
+        ctx.lineWidth = 4;
+        ctx.strokeStyle = '#ffffff';
+        ctx.stroke();
+
+        ctx.save();
+        ctx.translate(cx, cy);
+        ctx.rotate(anguloInicio + anguloFatia / 2);
+        ctx.textAlign = "right";
+        ctx.fillStyle = "#ffffff";
+        ctx.font = "bold 28px Arial";
+        ctx.shadowColor = "rgba(0, 0, 0, 0.5)";
+        ctx.shadowBlur = 4;
+        ctx.fillText(opcoesRoleta[i].desconto + "%", raio - 25, 10);
+        ctx.restore();
+    }
+
+    ctx.beginPath();
+    ctx.arc(cx, cy, 30, 0, 2 * Math.PI);
+    ctx.fillStyle = '#ffffff';
+    ctx.fill();
+    ctx.lineWidth = 3;
+    ctx.strokeStyle = '#ddd';
+    ctx.stroke();
+}
+
+desenharRoleta();
+
+function girarRoleta() {
+    const btnGirar = document.getElementById('btn-girar');
+    const resultado = document.getElementById('resultado-desconto');
+    const btnContinuar = document.getElementById('btn-continuar');
+
+    btnGirar.disabled = true;
+    btnGirar.style.opacity = "0.6";
+    btnGirar.textContent = "⏳ Sorteando...";
+
+    const indiceSorteado = Math.floor(Math.random() * totalFatias);
+    descontoGanho = opcoesRoleta[indiceSorteado].desconto;
+
+    const grausPorFatia = 360 / totalFatias;
+    const anguloAlvo = 360 - (indiceSorteado * grausPorFatia) - (grausPorFatia / 2) - 90;
+    
+    const voltas = 1800; 
+    anguloAtual += voltas + (anguloAlvo - (anguloAtual % 360));
+
+    canvas.style.transform = `rotate(${anguloAtual}deg)`;
+
+    setTimeout(() => {
+        resultado.classList.remove('escondido');
+        resultado.innerHTML = `🎉 Você ganhou <strong>${descontoGanho}% DE DESCONTO!</strong>`;
+        btnContinuar.classList.remove('escondido');
+        btnGirar.style.display = 'none';
+    }, 4000);
+}
+
+function irPasso(n) {
+    if (n === 3) {
+        let nome = document.getElementById('cli-nome').value.trim();
+        let tel = document.getElementById('cli-tel').value.trim();
+        let end = document.getElementById('cli-endereco').value.trim();
+        if (!nome || !tel || !end) {
+            alert('⚠️ Preencha Nome, WhatsApp e Endereço para continuar!');
+            return;
+        }
+        salvarCadastro(nome, tel);
+    }
+
+    if (n === 4) {
+        if(!montarResumo()) return;
+    }
+
+    document.querySelectorAll('.passo').forEach(p => p.classList.remove('ativo'));
+    document.getElementById(`passo${n}`).classList.add('ativo');
+}
+
+function salvarCadastro(nome, tel) {
+    let chave = `cliente_${nome.replace(/\s/g, '_')}_${tel.replace(/\D/g, '')}`;
+    let cadastro = JSON.parse(localStorage.getItem(chave) || '{"pontos":0,"atendimentos":0}');
+    
+    dadosCliente = {
+        nome, tel,
+        email: document.getElementById('cli-email').value.trim(),
+        endereco: document.getElementById('cli-endereco').value.trim(),
+        indicou: document.getElementById('cli-indicou').value.trim(),
+        chave
+    };
+
+    cadastro.atendimentos++;
+    let msgFidelidade = '';
+    if (cadastro.atendimentos >= 5) {
+        descontoGanho = Math.max(descontoGanho, DESCONTO_FIDELIDADE);
+        msgFidelidade = `\n💎 FIDELIDADE: ${cadastro.atendimentos}º Atendimento → ${DESCONTO_FIDELIDADE}% DE DESCONTO!`;
+    }
+
+    cadastro.ultimoAtendimento = new Date().toLocaleDateString('pt-BR');
+    localStorage.setItem(chave, JSON.stringify(cadastro));
+    dadosCliente.msgFidelidade = msgFidelidade;
+    dadosCliente.atendimentos = cadastro.atendimentos;
+}
+
+function montarResumo() {
+    let servicos = [];
+    let qtdTotal = 0;
+
+    const lista = [
+        { id: 'inst', nome: 'Instalação' },
+        { id: 'hig', nome: 'Higienização Completa' },
+        { id: 'pre', nome: 'Pré-Higienização' },
+        { id: 'gas', nome: 'Carga de Gás' },
+        { id: 'rem', nome: 'Remoção' },
+        { id: 'man', nome: 'Manutenção/Reparo' }
+    ];
+
+    lista.forEach(s => {
+        if (document.getElementById(`serv-${s.id}`).checked) {
+            let qtd = document.getElementById(`qtd-${s.id}`).value || '1';
+            servicos.push(`• ${s.nome} (${qtd}x)`);
+            qtdTotal += parseInt(qtd);
+        }
+    });
+
+    if (servicos.length === 0) {
+        alert('⚠️ Selecione pelo menos um serviço para continuar!');
+        return false;
+    }
+
+    let resumo = document.getElementById('resumo-dados');
+    resumo.innerHTML = `
+        <p><strong>👤 Nome:</strong> ${dadosCliente.nome}</p>
+        <p><strong>📱 WhatsApp:</strong> ${dadosCliente.tel}</p>
+        <p><strong>📍 Endereço:</strong> ${dadosCliente.endereco}</p>
+        ${dadosCliente.indicou ? `<p><strong>🤝 Indicado por:</strong> ${dadosCliente.indicou}</p>` : ''}
+        <hr style="margin:10px 0;border:none;border-top:1px dashed #ccc">
+        <p><strong>🔧 Serviços Selecionados:</strong></p>
+        <p>${servicos.join('<br>')}</p>
+        <p style="margin-top:6px;"><strong>📦 Qtd Total de Aparelhos:</strong> ${qtdTotal}</p>
+        <hr style="margin:10px 0;border:none;border-top:1px dashed #ccc">
+        <p><strong>🎁 Desconto Obtido:</strong> <span style="color:#2e7d32;font-weight:bold;">${descontoGanho}%</span></p>
+        ${dadosCliente.msgFidelidade ? `<p style="color:#2e7d32;font-weight:bold">${dadosCliente.msgFidelidade}</p>` : ''}
+    `;
+
+    dadosCliente.servicos = servicos.join('\n');
+    dadosCliente.qtdTotal = qtdTotal;
+    return true;
+}
+
+function enviarPedido() {
+    const texto = `
+🔔 *NOVO PEDIDO DE ATENDIMENTO!*
+
+👤 *Cliente:* ${dadosCliente.nome}
+📱 *WhatsApp:* ${dadosCliente.tel}
+📧 *E-mail:* ${dadosCliente.email || 'Não informado'}
+📍 *Endereço:* ${dadosCliente.endereco}
+🤝 *Indicado por:* ${dadosCliente.indicou || 'Ninguém'}
+
+🔧 *SERVIÇOS:*
+${dadosCliente.servicos}
+
+📦 *Total de Aparelhos:* ${dadosCliente.qtdTotal}
+🎁 *Desconto da Roleta:* ${descontoGanho}%
+📋 *Atendimento Nº:* ${dadosCliente.atendimentos}
+${dadosCliente.msgFidelidade || ''}
+
+📝 *Obs:* ${document.getElementById('obs-local').value || 'Nenhuma'}
+`.trim();
+
+    const url = `https://wa.me/${SEU_WHATSAPP}?text=${encodeURIComponent(texto)}`;
+    window.open(url, '_blank');
+
+    document.querySelectorAll('.passo').forEach(p => p.classList.remove('ativo'));
+    document.getElementById('passo-fim').classList.add('ativo');
+    document.getElementById('desc-final').textContent = descontoGanho;
+}
+</script>
+</body>
+</html>
